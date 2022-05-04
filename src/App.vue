@@ -53,7 +53,8 @@
                       d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
               </svg>
             </span>
-            <button class="absolute right-1.5 top-2 text-gray-400 hover:text-gray-700" @click="searchInput = null;isSearch = false;">
+            <button class="absolute right-1.5 top-2 text-gray-400 hover:text-gray-700"
+                    @click="searchInput = null;isSearch = false;">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                    stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -96,32 +97,36 @@
 </template>
 
 <script>
+import {ref, computed} from 'vue';
+
 export default {
-  data() {
-    return {
-      tasks: [],
-      taskInput: null,
-      isSearch: false,
-      searchInput: null,
-    }
-  },
-  methods: {
-    addTask() {
-      this.tasks.push({value: this.taskInput, completed: false});
+  setup() {
+
+    //Task
+    const tasks = ref([]);
+    const taskInput = ref(null);
+    function addTask() {
+      tasks.value.push({value: this.taskInput, completed: false});
       this.taskInput = null;
-    },
-    removeTask(index) {
-      this.tasks.splice(index, 1);
     }
-  },
-  computed: {
-    taskList(){
-      if(this.searchInput){
-          return this.tasks.filter(task => task.value.indexOf(this.searchInput) !== -1)
-      }else{
-        return this.tasks;
+
+    function removeTask(index) {
+      tasks.value.splice(index, 1);
+    }
+
+    //For Search
+    const isSearch = ref(false);
+    const searchInput = ref(null);
+    const taskList = computed(() => {
+      if (searchInput.value) {
+        return tasks.value.filter(task => task.value.indexOf(searchInput.value) !== -1)
+      } else {
+        return tasks.value;
       }
-    }
+    })
+
+    return {tasks,taskInput,isSearch,searchInput,addTask,removeTask,taskList}
   }
+
 }
 </script>
